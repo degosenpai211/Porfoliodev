@@ -16,6 +16,21 @@ const TAGS = {
     class: "bg-[#003159] text-white",
     icon: Tailwind,
   },
+  PHP: {
+    name: "PHP",
+    class: "bg-gradient-to-r from-[#777bb4] to-[#4f5b93] text-white shadow-lg",
+    icon: null,
+  },
+  LARAVEL: {
+    name: "Laravel",
+    class: "bg-gradient-to-r from-[#ff2d20] to-[#e63946] text-white shadow-lg",
+    icon: null,
+  },
+  SQL: {
+    name: "SQL",
+    class: "bg-gradient-to-r from-[#336791] to-[#1e4a72] text-white shadow-lg",
+    icon: null,
+  },
 }
 const PROJECTS = [
   {
@@ -32,8 +47,18 @@ const PROJECTS = [
     description:
       "Plataforma gratuita con retos de programación. Más de 1 millón de visitas en un mes. +50K retos completados. Creada desde cero con Next.js, React y Tailwind CSS.",
     link: "https://adventjs.dev",
+    github: "https://github.com/degosenpai211",
     image: "/projects/adventjs.webp",
     tags: [TAGS.NEXT, TAGS.TAILWIND],
+  },
+  {
+    title: "Sistema de Gestión - Aplicación Fullstack",
+    description:
+      "Aplicación web completa desarrollada con Laravel y PHP. Sistema de gestión con base de datos MySQL, autenticación de usuarios y panel administrativo. Implementa buenas prácticas de desarrollo backend.",
+    link: "#",
+    github: "https://github.com/degosenpai211",
+    image: "/projects/sarni.webp",
+    tags: [TAGS.PHP, TAGS.LARAVEL, TAGS.SQL],
   },
 ]
 ---
@@ -44,7 +69,7 @@ const PROJECTS = [
     <article class="flex flex-col space-x-0 space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
   <div class="w-full md:w-1/2">
     <div class="relative flex flex-col items-center col-span-6 row-span-5 gap-8 transition duration-500 ease-in-out transform shadow-xl overflow-clip rounded-xl sm:rounded-xl md:group-hover:-translate-y-1 md:group-hover:shadow-2xl lg:border lg:border-gray-800 lg:hover:border-gray-700 lg:hover:bg-gray-800/50">
-      <img alt="Recién llegado vs 5 años en Nueva Zelanda" class="object-cover object-top w-full h-56 transition duration-500 sm:h-full md:scale-110 md:group-hover:scale-105" loading="lazy" src={image} />
+      <img alt={title} class="object-cover object-top w-full h-56 transition duration-500 md:scale-110 md:group-hover:scale-105" loading="lazy" src={image} />
     </div>
   </div>
 
@@ -59,7 +84,7 @@ const PROJECTS = [
               <span
                 class={`flex gap-x-2 rounded-full text-xs ${tag.class} py-1 px-2 `}
               >
-                <tag.icon class="size-4" />
+                {tag.icon && <tag.icon class="size-4" />}
                 {tag.name}
               </span>
             </li>
