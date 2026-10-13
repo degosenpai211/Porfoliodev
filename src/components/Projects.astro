@@ -1,118 +1,166 @@
 ---
 import GitHub from "./icons/GitHub.astro"
-import NextJS from "./icons/NextJS.astro"
-import Tailwind from "./icons/Tailwind.astro"
 import Link from "./icons/Link.astro"
 import LinkButton from "./LinkButton.astro"
+import { getLang, localize } from "@/i18n"
 
 const TAGS = {
-  NEXT: {
-    name: "Next.js",
-    class: "bg-black text-white",
-    icon: NextJS,
-  },
-  TAILWIND: {
-    name: "Tailwind CSS",
-    class: "bg-[#003159] text-white",
-    icon: Tailwind,
-  },
-  PHP: {
-    name: "PHP",
-    class: "bg-gradient-to-r from-[#777bb4] to-[#4f5b93] text-white shadow-lg",
-    icon: null,
-  },
-  LARAVEL: {
-    name: "Laravel",
-    class: "bg-gradient-to-r from-[#ff2d20] to-[#e63946] text-white shadow-lg",
-    icon: null,
-  },
-  SQL: {
-    name: "SQL",
-    class: "bg-gradient-to-r from-[#336791] to-[#1e4a72] text-white shadow-lg",
-    icon: null,
-  },
+  FASTAPI: { name: "FastAPI", class: "bg-[#009688] text-white" },
+  POSTGRES: { name: "PostgreSQL", class: "bg-[#336791] text-white" },
+  PYTHON: { name: "Python", class: "bg-[#3776ab] text-white" },
+  REACT: { name: "React", class: "bg-[#087ea4] text-white" },
+  SQL: { name: "SQL", class: "bg-[#1e4a72] text-white" },
+  SQLITE: { name: "SQLite", class: "bg-[#0f4c81] text-white" },
 }
-const PROJECTS = [
+
+const ES = [
   {
-    title: "SVGL - A beautiful library with SVG logos",
+    title: "Vehimac — ERP de taller en producción",
+    role: "Backend",
     description:
-      "Biblioteca de logos SVG de las marcas más populares. +10k visitas al mes. +2K svgs descargados. Creado desde cero con Next.js, React y Tailwind CSS.",
-    link: "https://svgl.vercel.app/",
-    github: "https://github.com/pheralb/svgl",
-    image: "/projects/svgl.webp",
-    tags: [TAGS.NEXT, TAGS.TAILWIND],
+      "API FastAPI + PostgreSQL para un taller en Bolivia: órdenes, proformas, salarios y estado de resultados. Migraciones SQL, Kanban sin N+1 y docs en /docs. Auth queda para el VPS.",
+    github: "https://github.com/degosenpai211/Vehimac",
+    docs: "https://vehimac-production-9609.up.railway.app/docs",
+    caseStudy: "/proyectos/vehimac",
+    tags: [TAGS.FASTAPI, TAGS.POSTGRES, TAGS.PYTHON, TAGS.REACT],
+    visual: "kanban",
   },
   {
-    title: "AdventJS - Retos de programación con JavaScript y TypeScript",
+    title: "Operación de taller — caso de análisis",
+    role: "Datos",
     description:
-      "Plataforma gratuita con retos de programación. Más de 1 millón de visitas en un mes. +50K retos completados. Creada desde cero con Next.js, React y Tailwind CSS.",
-    link: "https://adventjs.dev",
-    github: "https://github.com/degosenpai211",
-    image: "/projects/adventjs.webp",
-    tags: [TAGS.NEXT, TAGS.TAILWIND],
+      "12 semanas de muestra operativa: margen, conversión proforma→OT y piezas sin recoger. SQL, KPIs y 5 recomendaciones de negocio. Datos de práctica, mismo dominio que Vehimac.",
+    caseStudy: "/proyectos/analisis-taller",
+    tags: [TAGS.SQL, TAGS.PYTHON],
+    visual: "chart",
   },
   {
-    title: "Sistema de Gestión - Aplicación Fullstack",
+    title: "Yachay — tutor escolar por API",
+    role: "Backend",
     description:
-      "Aplicación web completa desarrollada con Laravel y PHP. Sistema de gestión con base de datos MySQL, autenticación de usuarios y panel administrativo. Implementa buenas prácticas de desarrollo backend.",
-    link: "#",
-    github: "https://github.com/degosenpai211",
-    image: "/projects/sarni.webp",
-    tags: [TAGS.PHP, TAGS.LARAVEL, TAGS.SQL],
+      "FastAPI + webhooks de Telegram, SQLite/Postgres y dashboard docente. Clasifica dudas, detecta debilidad y deja OpenAPI en /docs. Pensado para Railway.",
+    github: "https://github.com/degosenpai211/YachayProyect",
+    caseStudy: "/proyectos/yachay",
+    tags: [TAGS.FASTAPI, TAGS.PYTHON, TAGS.SQLITE],
+    visual: "chat",
   },
 ]
+
+const EN = [
+  {
+    title: "Vehimac — workshop ERP in production",
+    role: "Backend",
+    description:
+      "FastAPI + PostgreSQL API for a workshop in Bolivia: work orders, quotes, salaries and income statement. SQL migrations, a Kanban without N+1 queries and docs at /docs. Auth is planned for the VPS move.",
+    github: "https://github.com/degosenpai211/Vehimac",
+    docs: "https://vehimac-production-9609.up.railway.app/docs",
+    caseStudy: "/proyectos/vehimac",
+    tags: [TAGS.FASTAPI, TAGS.POSTGRES, TAGS.PYTHON, TAGS.REACT],
+    visual: "kanban",
+  },
+  {
+    title: "Workshop operations — analysis case",
+    role: "Data",
+    description:
+      "12 weeks of sample operating data: margin, quote→work order conversion and uncollected parts. SQL, KPIs and 5 business recommendations. Practice data, same domain as Vehimac.",
+    caseStudy: "/proyectos/analisis-taller",
+    tags: [TAGS.SQL, TAGS.PYTHON],
+    visual: "chart",
+  },
+  {
+    title: "Yachay — school tutor over an API",
+    role: "Backend",
+    description:
+      "FastAPI + Telegram webhooks, SQLite/Postgres and a teacher dashboard. It classifies questions, flags weak topics and exposes OpenAPI at /docs. Designed for Railway.",
+    github: "https://github.com/degosenpai211/YachayProyect",
+    caseStudy: "/proyectos/yachay",
+    tags: [TAGS.FASTAPI, TAGS.PYTHON, TAGS.SQLITE],
+    visual: "chat",
+  },
+]
+
+const lang = getLang(Astro.url)
+const en = lang === "en"
+const PROJECTS = (en ? EN : ES).map((project) => ({
+  ...project,
+  caseStudy: localize(lang, project.caseStudy),
+}))
+const KANBAN = en
+  ? ["In progress", "Finished", "Delivered"]
+  : ["En proceso", "Terminado", "Entregado"]
 ---
 
 <div class="flex flex-col gap-y-16">
   {
-    PROJECTS.map(({ image, title, description, tags, link, github }) => (
-    <article class="flex flex-col space-x-0 space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
-  <div class="w-full md:w-1/2">
-    <div class="relative flex flex-col items-center col-span-6 row-span-5 gap-8 transition duration-500 ease-in-out transform shadow-xl overflow-clip rounded-xl sm:rounded-xl md:group-hover:-translate-y-1 md:group-hover:shadow-2xl lg:border lg:border-gray-800 lg:hover:border-gray-700 lg:hover:bg-gray-800/50">
-      <img alt={title} class="object-cover object-top w-full h-56 transition duration-500 md:scale-110 md:group-hover:scale-105" loading="lazy" src={image} />
-    </div>
-  </div>
-
-  <div class="w-full md:w-1/2 md:max-w-lg">
-    <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
-      {title}
-    </h3>
-    <div class="flex flex-wrap mt-2">
-      <ul class="flex flex-row mb-2 gap-x-2">
-          {tags.map((tag) => (
-            <li>
-              <span
-                class={`flex gap-x-2 rounded-full text-xs ${tag.class} py-1 px-2 `}
-              >
-                {tag.icon && <tag.icon class="size-4" />}
-                {tag.name}
+    PROJECTS.map(({ title, description, tags, github, docs, caseStudy, visual, role }) => (
+      <article class="flex flex-col space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
+        <div class="w-full md:w-1/2">
+          <a href={caseStudy} class="block">
+            <div class="relative flex h-56 flex-col justify-between overflow-hidden rounded-xl border border-gray-200 bg-white p-5 transition duration-500 dark:border-gray-800 dark:bg-gray-900 md:group-hover:-translate-y-1">
+              <span class="text-xs font-medium uppercase tracking-wide text-yellow-600 dark:text-yellow-200">
+                {role}
               </span>
-            </li>
-          ))}
-        </ul>
+              {visual === "kanban" && (
+                <div class="grid grid-cols-3 gap-2">
+                  {KANBAN.map((col) => (
+                    <div class="space-y-2">
+                      <p class="text-[10px] text-gray-500 dark:text-gray-400">{col}</p>
+                      <div class="h-10 rounded bg-gray-100 dark:bg-gray-800" />
+                      <div class="h-10 rounded bg-gray-100 dark:bg-gray-800" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              {visual === "chart" && (
+                <div class="flex h-28 items-end gap-2">
+                  {[40, 55, 35, 70, 62, 48, 78, 74, 50, 88, 80, 84].map((h) => (
+                    <div class="flex-1 rounded-t bg-yellow-500/80 dark:bg-yellow-300/80" style={`height:${h}%`} />
+                  ))}
+                </div>
+              )}
+              {visual === "chat" && (
+                <div class="space-y-2">
+                  <div class="w-4/5 rounded-2xl bg-gray-100 px-3 py-2 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                    {en ? "Why does an egg sink in water?" : "¿Por qué un huevo se hunde en el agua?"}
+                  </div>
+                  <div class="ml-auto w-4/5 rounded-2xl bg-yellow-100 px-3 py-2 text-xs text-gray-700 dark:bg-yellow-900/40 dark:text-yellow-100">
+                    {en ? "Weak topic detected → mini experiment" : "Debilidad detectada → mini-experimento"}
+                  </div>
+                </div>
+              )}
+            </div>
+          </a>
+        </div>
 
-      <div class="mt-2 text-gray-700 dark:text-gray-400">{description}</div>
-      <footer class="flex items-end justify-start mt-4 gap-x-4">
-          {github && (
-            <LinkButton href={github}>
-              <GitHub class="size-6" />
-              Code
-              
+        <div class="w-full md:w-1/2 md:max-w-lg">
+          <h3 class="text-2xl font-bold text-gray-800 dark:text-gray-100">{title}</h3>
+          <ul class="mt-2 mb-2 flex flex-row flex-wrap gap-2">
+            {tags.map((tag) => (
+              <li>
+                <span class={`flex rounded-full px-2 py-1 text-xs ${tag.class}`}>{tag.name}</span>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-2 text-gray-700 dark:text-gray-400">{description}</p>
+          <footer class="mt-4 flex flex-wrap items-center gap-3">
+            <LinkButton href={caseStudy} target="_self">
+              {en ? "Case study" : "Caso de estudio"}
             </LinkButton>
-          )}
-          {link && (
-            <LinkButton href={link}>
-              <Link class="size-4" />
-              Preview
-            </LinkButton>
-          )}
-        </footer>
-    </div>
-  </div>
-</article>
+            {github && (
+              <LinkButton href={github}>
+                <GitHub class="size-5" />
+                {en ? "Code" : "Código"}
+              </LinkButton>
+            )}
+            {docs && (
+              <LinkButton href={docs}>
+                <Link class="size-4" />
+                API /docs
+              </LinkButton>
+            )}
+          </footer>
+        </div>
+      </article>
     ))
   }
 </div>
-
-
-

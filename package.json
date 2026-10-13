@@ -10,12 +10,15 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "0.5.6",
-    "@astrojs/tailwind": "5.1.0",
-    "@fontsource-variable/onest": "5.0.2",
-    "astro": "4.4.5",
+    "@astrojs/check": "0.9.10",
+    "@astrojs/markdown-remark": "7.3.2",
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/onest": "5.3.1",
+    "astro": "7.3.8",
     "astro-robots-txt": "1.0.0",
-    "tailwindcss": "3.4.1",
-    "typescript": "5.3.3"
+    "autoprefixer": "10.6.1",
+    "postcss": "8.5.30",
+    "tailwindcss": "3.4.19",
+    "typescript": "5.9.3"
   }
 }

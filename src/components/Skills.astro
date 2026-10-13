@@ -1,0 +1,52 @@
+---
+import { getLang } from "@/i18n"
+
+const en = getLang(Astro.url) === "en"
+
+const GROUPS = [
+  {
+    title: "Backend",
+    items: ["Python", "FastAPI", "PostgreSQL", "SQL", "REST / OpenAPI", "Pydantic"],
+  },
+  {
+    title: en ? "Data" : "Datos",
+    items: en
+      ? ["SQL (CTEs, aggregations)", "Python", "KPIs and margins", "Dashboards", "Data cleaning"]
+      : ["SQL (CTEs, agregaciones)", "Python", "KPIs y márgenes", "Dashboards", "Limpieza de datos"],
+  },
+  {
+    title: "Frontend",
+    items: ["React", "JavaScript", "Tailwind CSS", "Astro"],
+  },
+  {
+    title: en ? "Infra and delivery" : "Infra y entrega",
+    items: ["Git", "Railway", "Vercel", "Supabase", en ? "Docker / containers" : "Docker / contenedores"],
+  },
+]
+---
+
+<div class="grid gap-8 sm:grid-cols-2">
+  {
+    GROUPS.map((group) => (
+      <article>
+        <h3 class="mb-3 text-lg font-semibold text-gray-800 dark:text-white">
+          {group.title}
+        </h3>
+        <ul class="flex flex-wrap gap-2">
+          {group.items.map((item) => (
+            <li class="rounded-full border border-gray-300 bg-white/70 px-3 py-1 text-sm text-gray-700 dark:border-gray-600 dark:bg-gray-800/80 dark:text-gray-200">
+              {item}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))
+  }
+</div>
+<p class="mt-8 text-sm text-gray-600 dark:text-gray-400">
+  {
+    en
+      ? "I also practice PHP and Laravel. Vehimac does not have authentication in production yet: it is the next step when the API moves to a VPS."
+      : "También practico PHP y Laravel. En Vehimac la autenticación todavía no está en producción: es el siguiente paso al pasar el API a un VPS."
+  }
+</p>

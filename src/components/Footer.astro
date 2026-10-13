@@ -1,5 +1,9 @@
 ---
+import { getLang, localize } from "@/i18n"
+
 const currentYear = new Date().getFullYear()
+const lang = getLang(Astro.url)
+const en = lang === "en"
 ---
 
 <footer
@@ -12,20 +16,32 @@ const currentYear = new Date().getFullYear()
       >&copy; {currentYear}
       <a href="https://github.com/degosenpai211" class="hover:underline"
         >Diego Sarmiento</a
-      >. Casi todos los derechos reservados
+      >. {en ? "Design based on" : "Diseño basado en"}
+      <a
+        href="https://github.com/midudev/porfolio.dev"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:underline">porfolio.dev</a
+      > {en ? "by" : "de"} midudev (CC BY-NC 4.0)
     </span>
     <ul
       class="flex flex-wrap items-center mt-3 text-sm font-medium dark:text-white/90 sm:mt-0"
     >
       <li>
-        <a href="/#sobre-mi" class="hover:underline me-4 md:me-6">Sobre mí</a>
+        <a href={localize(lang, "/#skills")} class="hover:underline me-4 md:me-6">Skills</a>
+      </li>
+      <li>
+        <a href={localize(lang, "/cv")} class="hover:underline me-4 md:me-6">CV</a>
+      </li>
+      <li>
+        <a href={localize(lang, "/#sobre-mi")} class="hover:underline me-4 md:me-6">{en ? "About" : "Sobre mí"}</a>
       </li>
       <li>
         <a
           id="contacto"
           href="mailto:diegoarmandosarmientoosinaga@gmail.com"
           class="hover:underline"
-          >Contacto</a
+          >{en ? "Contact" : "Contacto"}</a
         >
       </li>
     </ul>

@@ -4,48 +4,56 @@ import Layout from "@/layouts/Layout.astro"
 import AboutMe from "@/components/AboutMe.astro"
 import Briefcase from "@/components/icons/Briefcase.astro"
 import CodeIcon from "@/components/icons/Code.astro"
+import ChartIcon from "@/components/icons/Chart.astro"
 import Experience from "@/components/Experience.astro"
 import ProfileCheck from "@/components/icons/ProfileCheck.astro"
 import Projects from "@/components/Projects.astro"
+import Skills from "@/components/Skills.astro"
 import SectionContainer from "@/components/SectionContainer.astro"
 import Hero from "@/components/Hero.astro"
 import TitleSection from "@/components/TitleSection.astro"
 ---
 
 <Layout
-  title="Portafolio de Diego Sarmiento - Estudiante de Ingeniería en Sistemas"
-  description="Diego Sarmiento, programador boliviano especializado en React, JavaScript, PHP y Laravel. Estudiante de Ingeniería en Sistemas desde 2023 y en búsqueda de su primera oportunidad profesional."
+  title="Diego Sarmiento — Backend y analista de datos"
+  description="Diego Sarmiento, estudiante de Ingeniería en Sistemas en Santa Cruz, Bolivia. Backends con FastAPI y PostgreSQL, SQL de negocio y APIs en producción. Disponible para trabajar."
 >
   <main class="px-4">
     <SectionContainer class="py-16 md:py-36">
-      <Hero>
-      </slot>
-    </Hero>
+      <Hero />
     </SectionContainer>
     <div class="space-y-24">
-    <SectionContainer id="experiencia">
-      <TitleSection>
-        <Briefcase class="size-8" />
-        Experiencia laboral
-      </TitleSection>
-      <Experience />
-    </SectionContainer>
+      <SectionContainer id="experiencia">
+        <TitleSection>
+          <Briefcase class="size-8" />
+          Experiencia
+        </TitleSection>
+        <Experience />
+      </SectionContainer>
 
-    <SectionContainer id="proyectos">
-      <TitleSection>
-        <CodeIcon class="size-7" />
-        Proyectos
-      </TitleSection>
-      <Projects />
-    </SectionContainer>
+      <SectionContainer id="proyectos">
+        <TitleSection>
+          <CodeIcon class="size-7" />
+          Proyectos
+        </TitleSection>
+        <Projects />
+      </SectionContainer>
 
-    <SectionContainer id="sobre-mi">
-      <TitleSection>
-        <ProfileCheck class="size-8" />
-        Sobre mí
-      </TitleSection>
-      <AboutMe />
-    </SectionContainer>
-  </div>
+      <SectionContainer id="skills">
+        <TitleSection>
+          <ChartIcon class="size-7" />
+          Skills
+        </TitleSection>
+        <Skills />
+      </SectionContainer>
+
+      <SectionContainer id="sobre-mi">
+        <TitleSection>
+          <ProfileCheck class="size-8" />
+          Sobre mí
+        </TitleSection>
+        <AboutMe />
+      </SectionContainer>
+    </div>
   </main>
 </Layout>

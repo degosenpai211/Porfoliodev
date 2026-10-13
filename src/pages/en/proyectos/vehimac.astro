@@ -1,0 +1,134 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+import Link from "@/components/icons/Link.astro"
+---
+
+<Layout
+  title="Vehimac — workshop ERP | Diego Sarmiento"
+  description="Vehimac ERP case study: FastAPI, PostgreSQL, work orders, finances and an API in production for a workshop in Bolivia."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Backend · case study"
+        title="Vehimac — ERP for a workshop in Bolivia"
+        summary="An auto repair and 3D printing shop ran on Excel, WhatsApp and parts customers never picked up. I built the backend and data model of a lightweight ERP that is already running in production."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/Vehimac">
+          <GitHub class="size-5" />
+          Code
+        </LinkButton>
+        <LinkButton href="https://vehimac-production-9609.up.railway.app/docs">
+          <Link class="size-4" />
+          OpenAPI /docs
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problem</h2>
+        <p>
+          The shop needs to quote over WhatsApp, track every part (design →
+          installation), charge in bolivianos and read an income statement
+          similar to its Excel sheet. Without a data model, finished orders
+          got mixed with delivered ones and the margin was unreadable.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Architecture</h2>
+        <p>
+          A React PWA on Vercel talks to FastAPI on Railway. FastAPI uses no
+          ORM: it reaches Postgres through PostgREST (Supabase). The SQL lives
+          in versioned migrations. Request flow: UI → <code>/api</code> →
+          router → service → Postgres.
+        </p>
+        <div class="grid gap-3 text-sm sm:grid-cols-4">
+          {
+            [
+              ["React PWA", "Kanban, finances, PDF quotes"],
+              ["FastAPI", "Routers, schemas, services"],
+              ["PostgreSQL", "10 tables and 16 migrations"],
+              ["Railway + Vercel", "API and frontend in production"],
+            ].map(([name, detail]) => (
+              <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                <p class="font-semibold text-gray-800 dark:text-white">{name}</p>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">{detail}</p>
+              </div>
+            ))
+          }
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          API modules: <code>clients</code>, <code>mechanics</code>,
+          <code>work-orders</code>, <code>proformas</code>,
+          <code>stored-pieces</code>, <code>finances</code>,
+          <code>dashboard</code>.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Decisions</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">Kanban without N+1:</strong> every
+            <code>.execute()</code> against Supabase is a network round trip.
+            The order list no longer fetches parts one by one.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Process in JSONB:</strong> 5
+            fixed steps per part (migration v11) instead of a steps table the
+            shop was never going to maintain.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Prospect ≠ client:</strong> a
+            quote only needs a name and a WhatsApp number; the prospect becomes
+            a client only when they accept or the quote turns into a work
+            order. Otherwise it is deleted after 7 days.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Deferred auth:</strong> today
+            anyone with the URL can operate. It is an explicit debt for when
+            the API moves to a VPS with native Postgres.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Data model</h2>
+        <p>
+          Tables: <code>clients</code>, <code>vehicles</code>,
+          <code>mechanics</code>, <code>work_orders</code>,
+          <code>order_items</code>, <code>order_photos</code>,
+          <code>proformas</code>, <code>proforma_items</code>,
+          <code>finances</code>, <code>finance_settings</code>.
+        </p>
+        <p>
+          Work order states: in progress → finished (part ready, customer has
+          not picked it up) → delivered (income recorded in finances). That
+          business rule is what I later analyze in the data case.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Outcome and limits</h2>
+        <p>
+          The shop has a KPI panel, QR payments, PDF quotes sent over WhatsApp
+          and an income statement by week and by month. The code and
+          migrations are on GitHub; the API can be inspected at
+          <code>/docs</code>.
+        </p>
+        <p>
+          There are no automated tests and no auth. The next documented step
+          is a VPS (Nginx, PM2, native Postgres) and login. The operations
+          analysis is in the
+          <a class="text-yellow-600 dark:text-yellow-200" href="/en/proyectos/analisis-taller">data case</a>.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

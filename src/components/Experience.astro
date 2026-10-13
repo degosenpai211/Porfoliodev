@@ -1,27 +1,71 @@
 ---
 import ExperienceItem from "./ExperienceItem.astro"
-const EXPERIENCE = [
+import { getLang, localize } from "@/i18n"
+
+const ES = [
   {
-    date: "2023 - Actualidad",
+    date: "2026 — Actualidad",
+    title: "Backend y datos — ERP Vehimac",
+    company: "Taller mecánico / impresión 3D, Santa Cruz",
+    description:
+      "ERP en producción: FastAPI, PostgreSQL y React. Modelé órdenes, proformas, salarios y estado de resultados; evité N+1 en el Kanban y dejé 16 migraciones SQL. API en Railway, PWA en Vercel.",
+    link: "/proyectos/vehimac",
+  },
+  {
+    date: "2025 — 2026",
+    title: "Hackathones y productos propios",
+    company: "Yachay, Innovahack, OdiseIA",
+    description:
+      "APIs con webhooks, SQLite/Postgres y dashboards. Yachay es un tutor escolar por Telegram con FastAPI y docs OpenAPI. También presenté prototipos en Innovahack (Mobicorp) y OdiseIA.",
+    link: "/proyectos/yachay",
+  },
+  {
+    date: "2023 — Actualidad",
     title: "Estudiante de Ingeniería en Sistemas",
     company: "Santa Cruz de la Sierra, Bolivia",
     description:
-      "Cursando la carrera desde 2023 con foco en fundamentos de programación, estructuras de datos y arquitectura de software mientras desarrollo proyectos de práctica.",
-  },
-  {
-    date: "2024 - Actualidad",
-    title: "Proyectos personales y autoaprendizaje",
-    company: "Stack: React, JavaScript, PHP, Laravel, BD, contenedores",
-    description:
-      "He desarrollado proyectos web, participado en hackathones y completado cursos de desarrollo, aplicando tecnologías modernas. Me gusta crear soluciones funcionales que tengan buena escalabilidad y buena estructura por medio del aprendizaje continuo. ",
+      "Fundamentos de programación, estructuras de datos y arquitectura. El trabajo de taller es donde esas materias se vuelven API, modelo de datos y métrica de negocio.",
   },
 ]
+
+const EN = [
+  {
+    date: "2026 — Present",
+    title: "Backend and data — Vehimac ERP",
+    company: "Auto repair / 3D printing shop, Santa Cruz",
+    description:
+      "ERP in production: FastAPI, PostgreSQL and React. I modeled work orders, quotes, salaries and the income statement; removed N+1 queries from the Kanban and shipped 16 SQL migrations. API on Railway, PWA on Vercel.",
+    link: "/proyectos/vehimac",
+  },
+  {
+    date: "2025 — 2026",
+    title: "Hackathons and own products",
+    company: "Yachay, Innovahack, OdiseIA",
+    description:
+      "APIs with webhooks, SQLite/Postgres and dashboards. Yachay is a school tutor over Telegram built with FastAPI and OpenAPI docs. I also presented prototypes at Innovahack (Mobicorp) and OdiseIA.",
+    link: "/proyectos/yachay",
+  },
+  {
+    date: "2023 — Present",
+    title: "Systems Engineering student",
+    company: "Santa Cruz de la Sierra, Bolivia",
+    description:
+      "Programming fundamentals, data structures and architecture. The workshop project is where those courses turn into an API, a data model and a business metric.",
+  },
+]
+
+const lang = getLang(Astro.url)
+const EXPERIENCE = (lang === "en" ? EN : ES).map((item) => ({
+  ...item,
+  link: item.link && localize(lang, item.link),
+  linkLabel: lang === "en" ? "Learn more" : "Saber más",
+}))
 ---
 
 <ol class="relative mt-16">
   {
     EXPERIENCE.map((experience) => (
-      <li class="">
+      <li>
         <ExperienceItem {...experience} />
       </li>
     ))

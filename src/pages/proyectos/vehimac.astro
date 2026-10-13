@@ -1,0 +1,133 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+import Link from "@/components/icons/Link.astro"
+---
+
+<Layout
+  title="Vehimac — ERP de taller | Diego Sarmiento"
+  description="Case study del ERP Vehimac: FastAPI, PostgreSQL, órdenes, finanzas y API en producción para un taller en Bolivia."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Backend · caso de estudio"
+        title="Vehimac — ERP para un taller en Bolivia"
+        summary="Un taller de mecánica e impresión 3D operaba con Excel, WhatsApp y piezas que el cliente no recogía. Construí el backend y el modelo de datos de un ERP liviano que ya corre en producción."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/Vehimac">
+          <GitHub class="size-5" />
+          Código
+        </LinkButton>
+        <LinkButton href="https://vehimac-production-9609.up.railway.app/docs">
+          <Link class="size-4" />
+          OpenAPI /docs
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problema</h2>
+        <p>
+          El taller necesita cotizar por WhatsApp, seguir cada pieza (diseño →
+          instalación), cobrar en bolivianos y ver un estado de resultados
+          parecido a su Excel. Sin un modelo de datos, las órdenes terminadas
+          se mezclaban con las entregadas y el margen no era legible.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Arquitectura</h2>
+        <p>
+          PWA React en Vercel habla con FastAPI en Railway. FastAPI no usa ORM:
+          pega a Postgres vía PostgREST (Supabase). El SQL vive en migraciones
+          versionadas. Flujo de un request: UI → <code>/api</code> → router →
+          service → Postgres.
+        </p>
+        <div class="grid gap-3 text-sm sm:grid-cols-4">
+          {
+            [
+              ["PWA React", "Kanban, finanzas, proformas PDF"],
+              ["FastAPI", "Routers, schemas, servicios"],
+              ["PostgreSQL", "10 tablas y 16 migraciones"],
+              ["Railway + Vercel", "API y frontend en producción"],
+            ].map(([name, detail]) => (
+              <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+                <p class="font-semibold text-gray-800 dark:text-white">{name}</p>
+                <p class="mt-1 text-gray-600 dark:text-gray-400">{detail}</p>
+              </div>
+            ))
+          }
+        </div>
+        <p class="text-sm text-gray-600 dark:text-gray-400">
+          Módulos de la API: <code>clients</code>, <code>mechanics</code>,
+          <code>work-orders</code>, <code>proformas</code>,
+          <code>stored-pieces</code>, <code>finances</code>,
+          <code>dashboard</code>.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Decisiones</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">Kanban sin N+1:</strong> cada
+            <code>.execute()</code> a Supabase es un viaje de red. El listado de
+            órdenes ya no pide las piezas una por una.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Proceso en JSONB:</strong> 5
+            pasos fijos por pieza (migración v11) en vez de una tabla de pasos
+            que el taller no iba a mantener.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Prospecto ≠ cliente:</strong> se
+            cotiza con nombre y WhatsApp; entra a clientes solo si acepta o se
+            convierte a OT. Si no, se borra a los 7 días.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Auth aplazada:</strong> hoy
+            cualquiera con la URL opera. Es una deuda explícita para cuando el
+            API pase a un VPS con Postgres nativo.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Modelo de datos</h2>
+        <p>
+          Tablas: <code>clients</code>, <code>vehicles</code>,
+          <code>mechanics</code>, <code>work_orders</code>,
+          <code>order_items</code>, <code>order_photos</code>,
+          <code>proformas</code>, <code>proforma_items</code>,
+          <code>finances</code>, <code>finance_settings</code>.
+        </p>
+        <p>
+          Estados de OT: en proceso → terminado (pieza lista, cliente no
+          recogió) → entregado (ingreso en finanzas). Esa regla de negocio es
+          la que después analizo en el caso de datos.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Resultado y límites</h2>
+        <p>
+          El taller tiene panel con KPIs, QR de cobro, PDF de proforma por
+          WhatsApp y un EE.RR. por semana y por mes. El código y las
+          migraciones están en GitHub; la API se puede inspeccionar en
+          <code>/docs</code>.
+        </p>
+        <p>
+          No hay tests automatizados ni auth. El siguiente paso documentado es
+          VPS (Nginx, PM2, Postgres nativo) y login. El análisis de operación
+          está en el
+          <a class="text-yellow-600 dark:text-yellow-200" href="/proyectos/analisis-taller">caso de datos</a>.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

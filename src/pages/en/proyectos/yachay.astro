@@ -1,0 +1,81 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+---
+
+<Layout
+  title="Yachay — school tutor over an API | Diego Sarmiento"
+  description="Yachay case study: FastAPI, Telegram webhooks, SQLite/Postgres and a teacher dashboard with OpenAPI."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Backend · case study"
+        title="Yachay — conversational tutor over an API"
+        summary="A teacher cannot see which topic each student is stuck on when the question lives in a chat. Yachay receives the message, classifies the topic and feeds a dashboard."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/YachayProyect">
+          <GitHub class="size-5" />
+          Code
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problem</h2>
+        <p>
+          The student writes on Telegram. The system has to identify them with
+          a code, understand the question, flag a weak topic when it repeats
+          and, when it applies, suggest a small home experiment.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Request flow</h2>
+        <ol class="list-decimal space-y-2 pl-5">
+          <li>The webhook (or <code>/webhook/simulate</code> locally) hits FastAPI.</li>
+          <li>The student is resolved and the message is stored.</li>
+          <li>The agent classifies the topic. With ≥ 2 questions on the same topic, a weak topic is flagged.</li>
+          <li>The teacher dashboard reads those signals through the API.</li>
+        </ol>
+        <p>
+          OpenAPI is served at <code>/docs</code>. Healthcheck at
+          <code>/health</code> for Railway.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Trade-offs</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">Local SQLite vs Postgres in production:</strong>
+            Railway's filesystem is ephemeral, so production requires a
+            Postgres <code>DATABASE_URL</code>.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">DEMO_MODE:</strong> without LLM
+            keys it answers with Bolivian templates and a seed of students, so
+            the MVP is never blocked.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Simulating the webhook:</strong> useful
+            with Postman; it is not the real entry point in production.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">What it shows</h2>
+        <p>
+          Integration with an external channel, persistence, a documented API
+          contract and a dashboard that consumes that API. The repo includes
+          local setup, environment variables and deploy notes.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

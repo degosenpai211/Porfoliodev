@@ -1,0 +1,30 @@
+---
+import { getLang, localize } from "@/i18n"
+
+interface Props {
+  kicker: string
+  title: string
+  summary: string
+}
+
+const { kicker, title, summary } = Astro.props
+const lang = getLang(Astro.url)
+---
+
+<p class="mb-3 text-sm font-medium uppercase tracking-wide text-yellow-600 dark:text-yellow-200">
+  {kicker}
+</p>
+<h1 class="text-3xl font-bold tracking-tight text-gray-800 sm:text-4xl dark:text-white">
+  {title}
+</h1>
+<p class="mt-4 text-lg text-gray-700 dark:text-gray-300 text-pretty">
+  {summary}
+</p>
+<nav class="mt-6">
+  <a
+    href={localize(lang, "/#proyectos")}
+    class="text-sm font-medium text-yellow-600 hover:text-yellow-700 dark:text-yellow-200 dark:hover:text-yellow-100"
+  >
+    {lang === "en" ? "← Back to projects" : "← Volver a proyectos"}
+  </a>
+</nav>

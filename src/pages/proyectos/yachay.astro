@@ -1,0 +1,81 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+---
+
+<Layout
+  title="Yachay — tutor escolar por API | Diego Sarmiento"
+  description="Case study de Yachay: FastAPI, webhooks de Telegram, SQLite/Postgres y dashboard docente con OpenAPI."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Backend · caso de estudio"
+        title="Yachay — tutor conversacional por API"
+        summary="Un docente no puede ver en qué tema se traba cada alumno si la duda vive en un chat. Yachay recibe el mensaje, clasifica el tema y deja un dashboard."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/YachayProyect">
+          <GitHub class="size-5" />
+          Código
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problema</h2>
+        <p>
+          El alumno escribe por Telegram. El sistema tiene que identificarlo
+          con un código, entender la pregunta, marcar una debilidad si el tema
+          se repite y, cuando aplica, proponer un mini-experimento casero.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Flujo de un request</h2>
+        <ol class="list-decimal space-y-2 pl-5">
+          <li>Webhook (o <code>/webhook/simulate</code> en local) entra a FastAPI.</li>
+          <li>Se resuelve el alumno y se guarda el mensaje.</li>
+          <li>El agente clasifica el tema. Si hay ≥ 2 dudas del mismo tema, se activa debilidad.</li>
+          <li>El dashboard docente lee esas señales por la API.</li>
+        </ol>
+        <p>
+          OpenAPI queda en <code>/docs</code>. Healthcheck en
+          <code>/health</code> para Railway.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Trade-offs</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">SQLite local vs Postgres en producción:</strong>
+            el filesystem de Railway es efímero, así que producción pide
+            <code>DATABASE_URL</code> de Postgres.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">DEMO_MODE:</strong> sin claves de
+            LLM responde con plantillas bolivianas y un seed de alumnos, para
+            no bloquear el MVP.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Simular el webhook:</strong> sirve
+            para Postman; no es la puerta de entrada real en producción.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Qué demuestra</h2>
+        <p>
+          Integración con un canal externo, persistencia, un contrato de API
+          documentado y un dashboard que consume esa API. El repo incluye
+          arranque local, variables de entorno y notas de deploy.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

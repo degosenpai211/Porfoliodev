@@ -1,67 +1,72 @@
 ---
- const personalImageAlt = "Diego Sarmiento"
+import { getLang } from "@/i18n"
+
+const personalImageAlt = "Diego Sarmiento"
+const en = getLang(Astro.url) === "en"
 ---
 
 <article class="flex flex-col items-center justify-center gap-8 text-gray-700 dark:text-gray-300 md:flex-row">
   <div
-    class="[&>p]:mb-4 [&>p>strong]:text-yellow-500 dark:[&>p>strong]:text-yellow-100 [&>p>strong]:font-normal [&>p>strong]:font-mono text-pretty order-2 md:order-1"
+    class="[&_p]:mb-4 [&_strong]:text-yellow-500 dark:[&_strong]:text-yellow-100 [&_strong]:font-normal [&_strong]:font-mono text-pretty order-2 md:order-1"
   >
-    <p>
-      Me llamo Diego Sarmiento y estudio Ingeniería en Sistemas desde 2023.
-      Llevo menos de un año aprendiendo programación de manera intensiva y
-      enfocada en crear proyectos que me permitan afianzar fundamentos sólidos.
-    </p>
+    {
+      en ? (
+        <Fragment>
+        <p>
+          I'm Diego Sarmiento. I have been studying Systems Engineering since
+          2023 and I work on real problems of a workshop in Bolivia: work orders,
+          quotes, SQL and an income statement the business can actually read.
+        </p>
 
-    <p>
-      Actualmente practico con <strong>React, JavaScript, PHP y Laravel</strong>
-      para construir aplicaciones web completas, conectadas a bases de datos. Me interesa entender tanto el frontend como
-      el backend para ofrecer experiencias integrales.
-    </p>
+        <p>
+          At <strong>Vehimac</strong> I built the backend with FastAPI and
+          PostgreSQL: a work-order Kanban, finances, SQL migrations and an API
+          deployed on Railway. The conscious trade-off: operational flow first,
+          authentication comes with the move to a VPS.
+        </p>
 
-    <p>
-      También estoy explorando Astro para optimizar sitios estáticos y seguir
-      mejorando buenas prácticas. Busco mi primera oportunidad profesional para
-      aportar lo que he aprendido y continuar creciendo dentro de un equipo.
-    </p>
+        <p>
+          I also analyze the operation with SQL and KPIs (quote conversion,
+          uncollected parts, margin). I'm looking for a backend or data team
+          where that way of working adds value from day one.
+        </p>
+        </Fragment>
+      ) : (
+        <Fragment>
+        <p>
+          Me llamo Diego Sarmiento. Estudio Ingeniería en Sistemas desde 2023 y
+          trabajo sobre problemas reales de un taller en Bolivia: órdenes,
+          proformas, SQL y un estado de resultados que el negocio pueda leer.
+        </p>
+
+        <p>
+          En <strong>Vehimac</strong> armé el backend con FastAPI y PostgreSQL:
+          Kanban de órdenes, finanzas, migraciones SQL y una API desplegada en
+          Railway. El trade-off consciente: primero el flujo operativo, la
+          autenticación queda para el paso a VPS.
+        </p>
+
+        <p>
+          También analizo la operación con SQL y KPIs (conversión de proforma,
+          piezas sin recoger, margen). Busco un equipo de backend o datos donde
+          esa forma de trabajar sume desde el primer día.
+        </p>
+        </Fragment>
+      )
+    }
   </div>
 
   <div
     class="order-1 flex items-center justify-center w-64 h-64 md:order-2 rounded-2xl overflow-hidden border border-gray-300 dark:border-gray-700 shadow-lg"
   >
     <img
-      src="/diego.webp"
-      alt="Diego Sarmiento"
+      src="/diego-512.webp"
+      width="256"
+      height="256"
+      loading="lazy"
+      decoding="async"
+      alt={personalImageAlt}
       class="w-full h-full object-cover"
     />
   </div>
-
 </article>
-
-<!-- FRASES PROHIBIDAS EN VUESTRO PORTFOLIO
-
-<p>
-  Mi sueño es encontrar mi primer empleo en el mundo de la programación. Una empresa donde pueda seguir aprendiendo. ❌
-</p>
-
-<p>
-  ❌ Apasionado de la programación desde chekitito. Me encantan los ordenadores y crear páginas web buenas y rápidas con la última tecnología.
-</p>
-
-<p>
-  Trabajo bien en equipo. Siempre estoy aprendiendo cosas nuevas.
-</p>
-
--------------------------------------
-
---------------------------------------
-
-<p>
-  ¡Soy Leo! Estudié Derecho Empresarial y, tras años ejerciendo, me pasé al mundo de la Programación. Desde entonces disfruto creando experiencias web para los usuarios.
-</p>
-
-<p>
-  Entre mis éxitos destaco que durante el Grado Superior, ayudé a mis compañeros a aprender sobre TDD. Me encanta el testing, creo en su importancia, y me gusta compartir mi conocimiento sobre ello.
-</p>
-
-
--->

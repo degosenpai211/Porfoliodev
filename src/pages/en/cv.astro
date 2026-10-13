@@ -1,0 +1,111 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+---
+
+<Layout
+  title="CV — Diego Sarmiento"
+  description="Résumé of Diego Sarmiento: FastAPI/PostgreSQL backend and operations and finance analysis."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <div class="flex flex-wrap items-start justify-between gap-4 print:hidden">
+        <div>
+          <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Diego Sarmiento</h1>
+          <p class="mt-2 text-gray-600 dark:text-gray-300">
+            Backend and data analyst · Santa Cruz de la Sierra, Bolivia
+          </p>
+        </div>
+        <button
+          id="print-cv"
+          class="rounded-xl border border-gray-300 bg-gray-100 px-4 py-2 text-sm text-gray-800 dark:border-gray-600 dark:bg-gray-800 dark:text-white"
+        >
+          Save as PDF
+        </button>
+      </div>
+
+      <p class="mt-6 text-gray-700 dark:text-gray-300 print:mt-0">
+        Systems Engineering student. I design APIs with FastAPI and
+        PostgreSQL and turn the operation of a business into SQL, KPIs and
+        recommendations. Open to work.
+      </p>
+
+      <ul class="mt-4 space-y-1 text-sm text-gray-600 dark:text-gray-400">
+        <li>Santa Cruz de la Sierra, Bolivia</li>
+        <li>
+          <a class="hover:underline" href="mailto:diegoarmandosarmientoosinaga@gmail.com">diegoarmandosarmientoosinaga@gmail.com</a>
+        </li>
+        <li>
+          <a class="hover:underline" href="https://github.com/degosenpai211">github.com/degosenpai211</a>
+          ·
+          <a class="hover:underline" href="https://www.linkedin.com/in/diego-a-sarmiento-osinaga-425980344">LinkedIn</a>
+        </li>
+      </ul>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Experience</h2>
+        <article class="mt-4">
+          <h3 class="font-medium text-gray-800 dark:text-white">Backend and data — Vehimac ERP</h3>
+          <p class="text-sm text-gray-500">2026 — Present · Auto repair / 3D printing shop</p>
+          <ul class="mt-2 list-disc pl-5 text-gray-700 dark:text-gray-300">
+            <li>FastAPI + PostgreSQL API: work orders, quotes, salaries and income statement.</li>
+            <li>16 SQL migrations, a Kanban without N+1 queries, deployed on Railway and Vercel.</li>
+            <li>KPIs for margin, quote conversion and uncollected parts.</li>
+          </ul>
+        </article>
+        <article class="mt-6">
+          <h3 class="font-medium text-gray-800 dark:text-white">Products and hackathons</h3>
+          <p class="text-sm text-gray-500">2025 — 2026 · Yachay, Innovahack, OdiseIA</p>
+          <ul class="mt-2 list-disc pl-5 text-gray-700 dark:text-gray-300">
+            <li>Yachay: FastAPI, Telegram webhooks, SQLite/Postgres and OpenAPI.</li>
+            <li>Prototypes for Mobicorp (Innovahack) and the OdiseIA competition.</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Education</h2>
+        <p class="mt-3 text-gray-700 dark:text-gray-300">
+          Systems Engineering · 2023 — Present · Santa Cruz de la Sierra, Bolivia
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Skills</h2>
+        <p class="mt-3 text-gray-700 dark:text-gray-300">
+          Python, FastAPI, PostgreSQL, SQL, React, JavaScript, Git, Railway, Vercel.
+          Practicing: PHP, Laravel, containers.
+        </p>
+      </section>
+
+      <section class="mt-10">
+        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Projects</h2>
+        <ul class="mt-3 list-disc pl-5 text-gray-700 dark:text-gray-300">
+          <li>Vehimac — ERP in production (FastAPI, Postgres, /docs).</li>
+          <li>Workshop operations analysis — SQL, dashboard and recommendations.</li>
+          <li>Yachay — school tutor over an API with a teacher dashboard.</li>
+        </ul>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>
+
+<script>
+  document.getElementById("print-cv")?.addEventListener("click", () => {
+    window.print()
+  })
+</script>
+
+<style>
+  @media print {
+    header,
+    footer,
+    #print-cv {
+      display: none !important;
+    }
+    body {
+      background: white !important;
+      color: black !important;
+    }
+  }
+</style>

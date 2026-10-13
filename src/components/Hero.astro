@@ -3,13 +3,20 @@ import Badge from "@/components/Badge.astro"
 import LinkedInIcon from "@/components/icons/LinkedIn.astro"
 import MailIcon from "@/components/icons/Mail.astro"
 import GitHub from "@/components/icons/GitHub.astro"
+import FileIcon from "@/components/icons/File.astro"
 import SocialPill from "@/components/SocialPill.astro"
+import { getLang, localize } from "@/i18n"
+
+const lang = getLang(Astro.url)
+const en = lang === "en"
 ---
 
 <div class="max-w-xl">
   <div class="flex gap-4 mb-4">
     <img
-      src="/me.png"
+      src="/diego-128.webp"
+      width="64"
+      height="64"
       alt="Diego Sarmiento"
       class="rounded-full shadow-lg size-16 object-cover"
     />
@@ -19,30 +26,51 @@ import SocialPill from "@/components/SocialPill.astro"
       rel="noopener"
       class="flex items-center transition md:justify-center md:hover:scale-105"
     >
-      <Badge>Disponible para trabajar</Badge>
+      <Badge>{en ? "Open to work" : "Disponible para trabajar"}</Badge>
     </a>
   </div>
   <h1
     class="text-4xl font-bold tracking-tight text-gray-800 sm:text-5xl dark:text-white"
   >
-    Hey, soy Diego Sarmiento
+    {en ? "Hey, I'm Diego Sarmiento" : "Hey, soy Diego Sarmiento"}
   </h1>
   <p
-    class="mt-6 text-xl text-gray-800 dark:[&>strong]:text-yellow-200 [&>strong]:text-yellow-500 [&>strong]:font-semibold dark:text-gray-300"
+    class="mt-6 text-xl text-gray-800 dark:[&_strong]:text-yellow-200 [&_strong]:text-yellow-500 [&_strong]:font-semibold dark:text-gray-300"
   >
-    Estudiante de Ingeniería en Sistemas desde 2023 en Santa Cruz de la Sierra,
-    Bolivia. <strong>Programador en React, JavaScript, PHP, Laravel, bases de
-    datos y contenedores</strong>; actualmente aprendiendo Astro y construyendo
-    proyectos personales para crecer como desarrollador Fullstack.
+    {
+      en ? (
+        <Fragment>
+          Systems Engineering student in Santa Cruz de la Sierra, Bolivia. I
+          build <strong>backends with FastAPI, PostgreSQL and APIs running in production</strong>
+          and I analyze operations and finances so a business can see where
+          its money gets stuck. Current focus: <strong>backend and data analysis</strong>.
+        </Fragment>
+      ) : (
+        <Fragment>
+          Estudiante de Ingeniería en Sistemas en Santa Cruz de la Sierra, Bolivia.
+          Construyo <strong>backends con FastAPI, PostgreSQL y APIs en producción</strong>
+          y analizo operación y finanzas para que un negocio vea dónde se traba el
+          dinero. Hoy el foco es <strong>backend y analista de datos</strong>.
+        </Fragment>
+      )
+    }
   </p>
   <nav class="flex flex-wrap gap-4 mt-8">
     <SocialPill href="mailto:diegoarmandosarmientoosinaga@gmail.com">
       <MailIcon class="size-4" />
-      Contáctame
+      {en ? "Contact me" : "Contáctame"}
     </SocialPill>
     <SocialPill href="https://www.linkedin.com/in/diego-a-sarmiento-osinaga-425980344">
       <LinkedInIcon class="size-4" />
       LinkedIn
+    </SocialPill>
+    <SocialPill href="https://github.com/degosenpai211">
+      <GitHub class="size-4" />
+      GitHub
+    </SocialPill>
+    <SocialPill href={localize(lang, "/cv")}>
+      <FileIcon class="size-4" />
+      CV
     </SocialPill>
   </nav>
 </div>

@@ -1,0 +1,219 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import {
+  TALLER_WEEKS,
+  TALLER_TOTALS,
+  EGRESO_RUBROS,
+} from "@/data/taller-operacion.js"
+
+const maxIngreso = Math.max(...TALLER_WEEKS.map((w) => w.ingresos))
+const bs = (n: number) => `Bs. ${n.toLocaleString("es-BO")}`
+const pct = (monto: number) => Math.round((monto / TALLER_TOTALS.egresos) * 100)
+const filamentoPct = pct(EGRESO_RUBROS[0].monto)
+const filamentoSueldosPct = pct(EGRESO_RUBROS[0].monto + EGRESO_RUBROS[1].monto)
+---
+
+<Layout
+  title="Análisis de operación de taller | Diego Sarmiento"
+  description="Caso de analista de datos: 12 semanas de operación de taller, SQL, KPIs y recomendaciones de negocio."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Analista de datos · caso de estudio"
+        title="Dónde se traba el dinero en un taller"
+        summary="Pregunta: si las órdenes suben, ¿por qué el margen no acompaña y hay cada vez más piezas sin recoger? Muestra de práctica de 12 semanas, mismo dominio que Vehimac (no son cifras contables del cliente)."
+      />
+
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Ingresos (12 sem.)</p>
+          <p class="mt-1 text-2xl font-semibold text-gray-800 dark:text-white">{bs(TALLER_TOTALS.ingresos)}</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Margen</p>
+          <p class="mt-1 text-2xl font-semibold text-gray-800 dark:text-white">{TALLER_TOTALS.margenPct}%</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Conversión proforma → OT</p>
+          <p class="mt-1 text-2xl font-semibold text-gray-800 dark:text-white">{TALLER_TOTALS.conversion}%</p>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900">
+          <p class="text-sm text-gray-500 dark:text-gray-400">Piezas sin recoger (S12)</p>
+          <p class="mt-1 text-2xl font-semibold text-yellow-600 dark:text-yellow-200">{TALLER_TOTALS.sinRecoger}</p>
+        </div>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Enfoque</h2>
+        <ol class="list-decimal space-y-2 pl-5">
+          <li>Definir KPIs con el negocio: ingreso al entregar, egreso por rubro, OT terminada ≠ cobrada.</li>
+          <li>Limpiar: una OT terminada no es ingreso hasta <code>entregado</code>.</li>
+          <li>Agregar por semana y por rubro (SQL abajo).</li>
+          <li>Cruzar conversión de proformas con piezas acumuladas sin recoger.</li>
+        </ol>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Ingresos vs egresos por semana</h2>
+        <p class="mt-2 mb-6 text-gray-600 dark:text-gray-400">
+          Los ingresos crecen hacia el final del trimestre; los egresos también,
+          sobre todo filamento y sueldos. El margen se comprime en S3, S6 y S9.
+        </p>
+        <div class="space-y-3">
+          {
+            TALLER_WEEKS.map((w) => (
+              <div>
+                <div class="mb-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>{w.semana}</span>
+                  <span>{bs(w.ingresos)} / {bs(w.egresos)}</span>
+                </div>
+                <div class="flex h-3 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-yellow-500 dark:bg-yellow-300"
+                    style={`width:${Math.round((w.ingresos / maxIngreso) * 100)}%`}
+                  />
+                </div>
+                <div class="mt-1 flex h-2 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-gray-400 dark:bg-gray-500"
+                    style={`width:${Math.round((w.egresos / maxIngreso) * 100)}%`}
+                  />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+        <p class="mt-3 text-xs text-gray-500 dark:text-gray-400">
+          Barra amarilla: ingresos. Barra gris: egresos. Escala al ingreso máximo de la muestra.
+        </p>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">SQL usado</h2>
+        <p class="mt-2 text-gray-600 dark:text-gray-400">
+          Consultas escritas contra el esquema de Vehimac (<code>finances</code>,
+          <code>work_orders</code>, <code>proformas</code>).
+        </p>
+        <pre class="mt-4 overflow-x-auto rounded-xl border border-gray-200 bg-gray-50 p-4 text-sm text-gray-800 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-200"><code>{`-- 1) Caja por semana. La fuente es finances: sueldos y alquileres
+--    no cuelgan de una OT, así que no se parte de work_orders.
+SELECT
+  date_trunc('week', f.date)::date AS semana,
+  SUM(f.amount) FILTER (WHERE f.type = 'ingreso') AS ingresos,
+  SUM(f.amount) FILTER (WHERE f.type = 'gasto')   AS egresos
+FROM finances f
+GROUP BY 1
+ORDER BY 1;
+
+-- 2) Egresos por rubro y su peso sobre el total.
+SELECT
+  f.category AS rubro,
+  SUM(f.amount) AS monto,
+  ROUND(100.0 * SUM(f.amount) / SUM(SUM(f.amount)) OVER ()) AS share_pct
+FROM finances f
+WHERE f.type = 'gasto'
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- 3) Piezas sin recoger: OT terminada que todavía no pasó a entregado.
+--    Es una foto del momento; se registra una vez por semana.
+SELECT
+  COUNT(*) AS sin_recoger,
+  MIN(wo.updated_at)::date AS la_mas_antigua
+FROM work_orders wo
+WHERE wo.status = 'terminado';
+
+-- 4) Conversión proforma → OT: una proforma convertida guarda su OT.
+SELECT
+  COUNT(*) AS proformas,
+  COUNT(p.work_order_id) AS ots,
+  ROUND(100.0 * COUNT(p.work_order_id) / NULLIF(COUNT(*), 0)) AS conversion_pct
+FROM proformas p
+WHERE p.created_at >= now() - interval '12 weeks';`}</code></pre>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Egresos por rubro</h2>
+        <div class="mt-4 overflow-x-auto">
+          <table class="w-full text-left text-sm text-gray-700 dark:text-gray-300">
+            <thead>
+              <tr class="border-b border-gray-200 dark:border-gray-700">
+                <th class="py-2 font-medium">Rubro</th>
+                <th class="py-2 font-medium">Monto</th>
+                <th class="py-2 font-medium">Share</th>
+              </tr>
+            </thead>
+            <tbody>
+              {
+                EGRESO_RUBROS.map((row) => (
+                  <tr class="border-b border-gray-100 dark:border-gray-800">
+                    <td class="py-2">{row.rubro}</td>
+                    <td class="py-2">{bs(row.monto)}</td>
+                    <td class="py-2">{pct(row.monto)}%</td>
+                  </tr>
+                ))
+              }
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Hallazgos</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            Ticket medio {bs(TALLER_TOTALS.ticket)} sobre {TALLER_TOTALS.entregadas} entregas.
+          </li>
+          <li>
+            Las piezas sin recoger pasan de 4 a 12: trabajo hecho que todavía no
+            es caja.
+          </li>
+          <li>
+            Conversión proforma → OT en {TALLER_TOTALS.conversion}%: el
+            {100 - TALLER_TOTALS.conversion}% de lo cotizado no entra a
+            producción.
+          </li>
+          <li>
+            Filamento + sueldos son ~{filamentoSueldosPct}% del egreso. El pico de S6 y S9 coincide
+            con más proformas y menos OTs cerradas.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Recomendaciones</h2>
+        <ol class="list-decimal space-y-3 pl-5">
+          <li>
+            WhatsApp automático a las 48 h de OT en <em>terminado</em> y otra
+            vez a los 7 días. Objetivo: bajar piezas sin recoger de 12 a menos
+            de 6 en un mes.
+          </li>
+          <li>
+            No abrir una OT nueva si el cliente ya tiene 2 piezas sin recoger
+            (salvo adelanto). Libera capacidad y caja.
+          </li>
+          <li>
+            Revisar proformas de S6 y S9 (alta cotización, baja conversión):
+            precio de filamento vs. lo cotizado.
+          </li>
+          <li>
+            Comprar filamento contra OTs aceptadas, no contra stock “por las
+            dudas”. Es el {filamentoPct}% del egreso.
+          </li>
+          <li>
+            Mirar el EE.RR. primero por semana, no por mes: los tres pozos de
+            margen se pierden en el agregado mensual.
+          </li>
+        </ol>
+      </section>
+
+      <p class="mt-12 text-sm text-gray-500 dark:text-gray-400">
+        Limitación: muestra de práctica para mostrar el método (pregunta → SQL
+        → hallazgo → acción). En un puesto real usaría el Postgres de Vehimac
+        con datos del taller y las mismas consultas.
+      </p>
+    </SectionContainer>
+  </main>
+</Layout>
