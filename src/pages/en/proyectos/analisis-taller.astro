@@ -78,13 +78,13 @@ const filamentoSueldosPct = pct(EGRESO_RUBROS[0].monto + EGRESO_RUBROS[1].monto)
                   <span>{w.semana.replace("S", "W")}</span>
                   <span>{bs(w.ingresos)} / {bs(w.egresos)}</span>
                 </div>
-                <div class="flex h-3 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+                <div class="flex h-3 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
                   <div
                     class="h-full bg-yellow-500 dark:bg-yellow-300"
                     style={`width:${Math.round((w.ingresos / maxIngreso) * 100)}%`}
                   />
                 </div>
-                <div class="mt-1 flex h-2 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+                <div class="mt-1 flex h-2 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
                   <div
                     class="h-full bg-gray-400 dark:bg-gray-500"
                     style={`width:${Math.round((w.egresos / maxIngreso) * 100)}%`}

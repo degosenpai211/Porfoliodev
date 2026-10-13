@@ -105,8 +105,8 @@ const KANBAN = en
                   {KANBAN.map((col) => (
                     <div class="space-y-2">
                       <p class="text-[10px] text-gray-500 dark:text-gray-400">{col}</p>
-                      <div class="h-10 rounded bg-gray-100 dark:bg-gray-800" />
-                      <div class="h-10 rounded bg-gray-100 dark:bg-gray-800" />
+                      <div class="h-10 rounded-sm bg-gray-100 dark:bg-gray-800" />
+                      <div class="h-10 rounded-sm bg-gray-100 dark:bg-gray-800" />
                     </div>
                   ))}
                 </div>
@@ -114,7 +114,7 @@ const KANBAN = en
               {visual === "chart" && (
                 <div class="flex h-28 items-end gap-2">
                   {[40, 55, 35, 70, 62, 48, 78, 74, 50, 88, 80, 84].map((h) => (
-                    <div class="flex-1 rounded-t bg-yellow-500/80 dark:bg-yellow-300/80" style={`height:${h}%`} />
+                    <div class="flex-1 rounded-t-sm bg-yellow-500/80 dark:bg-yellow-300/80" style={`height:${h}%`} />
                   ))}
                 </div>
               )}
