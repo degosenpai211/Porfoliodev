@@ -1,0 +1,96 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+
+const WEEKS = [
+  { semana: "S1", ventas: 40, costos: 28 },
+  { semana: "S2", ventas: 46, costos: 30 },
+  { semana: "S3", ventas: 44, costos: 36 },
+  { semana: "S4", ventas: 58, costos: 34 },
+  { semana: "S5", ventas: 52, costos: 33 },
+  { semana: "S6", ventas: 49, costos: 38 },
+  { semana: "S7", ventas: 63, costos: 37 },
+  { semana: "S8", ventas: 61, costos: 36 },
+]
+const maxVentas = Math.max(...WEEKS.map((week) => week.ventas))
+---
+
+<Layout
+  title="Lectura de ventas de ejemplo | Diego Sarmiento"
+  description="Caso de práctica de analista de datos con cifras inventadas: qué mirar en las ventas de un negocio y qué cambiaría."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Analista de datos · caso de práctica"
+        title="Qué mirar cuando las ventas suben y la ganancia no"
+        summary="Cifras de ejemplo, armadas para mostrar el método. No son de un cliente ni de un taller. La pregunta es la de siempre: si se vende más, ¿por qué la ganancia no acompaña?"
+      />
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">El problema</h2>
+        <p>
+          Un almacén de barrio ve que la caja de la semana crece, pero al
+          cierre no le queda más dinero. Sin separar ventas, costos y lo que
+          todavía no se cobró, el dueño solo ve un total y no sabe dónde
+          ajustar.
+        </p>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Ventas y costos, en el ejemplo</h2>
+        <p class="mt-2 mb-6 text-gray-600 dark:text-gray-400">
+          Escala de 0 a 100, solo para comparar semanas. La barra clara es
+          la venta. La oscura es el costo.
+        </p>
+        <div class="space-y-3">
+          {
+            WEEKS.map((week) => (
+              <div>
+                <div class="mb-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>{week.semana}</span>
+                  <span>{week.ventas} / {week.costos}</span>
+                </div>
+                <div class="flex h-3 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-yellow-500 dark:bg-yellow-300"
+                    style={`width:${Math.round((week.ventas / maxVentas) * 100)}%`}
+                  />
+                </div>
+                <div class="mt-1 flex h-2 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-gray-400 dark:bg-gray-500"
+                    style={`width:${Math.round((week.costos / maxVentas) * 100)}%`}
+                  />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Qué se ve</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>Las ventas suben hacia el final, pero en S3 y S6 el costo se acerca demasiado a la venta.</li>
+          <li>Esas dos semanas son el lugar donde preguntar: ¿se compró de más o se vendió más barato?</li>
+          <li>El mes completo esconde esos dos baches. Por eso conviene mirar la semana, no solo el cierre.</li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Qué mejoraría</h2>
+        <ol class="list-decimal space-y-3 pl-5">
+          <li>Separar, cada semana, lo vendido, lo gastado y lo que todavía no entró a caja.</li>
+          <li>Revisar compras de S3 y S6 antes de repetir el mismo pedido “por las dudas”.</li>
+          <li>No decidir el mes con un solo número. El total tapa las semanas flojas.</li>
+        </ol>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          Es un ejercicio para mostrar cómo leo un negocio. En un trabajo real
+          uso los números del cliente, en privado, y no los publico.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

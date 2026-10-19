@@ -9,6 +9,7 @@ import { getLang, localize } from "@/i18n"
 
 const lang = getLang(Astro.url)
 const en = lang === "en"
+const pricesHref = "https://ofertas-web-diego.netlify.app/"
 ---
 
 <div class="max-w-xl">
@@ -18,7 +19,7 @@ const en = lang === "en"
       width="64"
       height="64"
       alt="Diego Sarmiento"
-      class="rounded-full shadow-lg size-16 object-cover"
+      class="rounded-full shadow-lg size-16 object-cover object-[center_18%]"
     />
     <a
       href="https://www.linkedin.com/in/diego-a-sarmiento-osinaga-425980344"
@@ -40,22 +41,27 @@ const en = lang === "en"
     {
       en ? (
         <Fragment>
-          Systems Engineering student in Santa Cruz de la Sierra, Bolivia. I
-          build <strong>backends with FastAPI, PostgreSQL and APIs running in production</strong>
-          and I analyze operations and finances so a business can see where
-          its money gets stuck. Current focus: <strong>backend and data analysis</strong>.
+          Systems Engineering student in Santa Cruz de la Sierra, Bolivia.
+          If you are looking for a way to organize or improve your business,
+          <strong> custom software gets you there</strong>: one place for the
+          work, the quote and how the month is going. I have already done this
+          with <strong>two workshops</strong>.
         </Fragment>
       ) : (
         <Fragment>
           Estudiante de Ingeniería en Sistemas en Santa Cruz de la Sierra, Bolivia.
-          Construyo <strong>backends con FastAPI, PostgreSQL y APIs en producción</strong>
-          y analizo operación y finanzas para que un negocio vea dónde se traba el
-          dinero. Hoy el foco es <strong>backend y analista de datos</strong>.
+          Si buscás ordenar o mejorar tu negocio,
+          <strong> un software a medida lo consigue</strong>: un solo lugar para
+          el trabajo, la cotización y cómo va el mes. Ya lo hice con
+          <strong> dos talleres</strong>.
         </Fragment>
       )
     }
   </p>
   <nav class="flex flex-wrap gap-4 mt-8">
+    <SocialPill href={pricesHref}>
+      {en ? "Prices and packs" : "Precios y packs"}
+    </SocialPill>
     <SocialPill href="mailto:diegoarmandosarmientoosinaga@gmail.com">
       <MailIcon class="size-4" />
       {en ? "Contact me" : "Contáctame"}

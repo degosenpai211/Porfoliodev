@@ -1,0 +1,125 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+---
+
+<Layout
+  title="Tareas de Casa — reglas en Postgres | Diego Sarmiento"
+  description="Case study de Tareas de Casa: app móvil con React Native y Supabase, donde los permisos, los puntos y la limpieza de fotos viven en Postgres (RLS, triggers y pg_cron)."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Postgres · caso de estudio"
+        title="Tareas de Casa — las reglas viven en la base"
+        summary="Una familia reparte tareas, los hijos suben una foto de antes y otra de después, y suman puntos. Lo interesante no es la app: es que un hijo no puede hacer trampa aunque modifique la app, porque las reglas las aplica Postgres."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/casita">
+          <GitHub class="size-5" />
+          Código
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problema</h2>
+        <p>
+          La app habla directo con Supabase, sin un backend propio en el medio.
+          Eso significa que cualquier regla que solo esté en el frontend se
+          puede saltar: alcanza con llamar a la API con el token del hijo. Si
+          las reglas importan (quién toca qué tarea, quién gana puntos), tienen
+          que vivir en la base de datos.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Cómo está armado</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">8 tablas con RLS activado</strong>
+            y 27 políticas (3 de ellas sobre las fotos): cada familia solo ve lo suyo, y un hijo solo puede
+            actualizar las tareas asignadas a él.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Un trigger de defensa en profundidad:</strong>
+            aunque la política deja pasar el UPDATE, si quien escribe es un
+            hijo y cambia el responsable, los puntos o la fecha, la base
+            rechaza la fila.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Puntos en un ledger:</strong>
+            al completarse una tarea, un trigger inserta el movimiento en
+            <code>points_ledger</code> y actualiza el saldo. El cliente nunca
+            escribe puntos.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">pg_cron para lo que pasa solo:</strong>
+            cada 15 minutos marca tareas vencidas y cada noche encola las fotos
+            de más de 7 días; una Edge Function las borra del Storage, que
+            Postgres no puede tocar directamente.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Fotos sin conexión:</strong>
+            si no hay señal, la foto se guarda en una cola local y se sube sola
+            cuando vuelve la red.
+          </li>
+        </ul>
+        <p>
+          El esquema completo son ~1.000 líneas de SQL comentado en español.
+          La app (Expo Router, TypeScript, React Query) tiene una vista para
+          la madre y otra para los hijos.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Trade-offs</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">Sin backend propio:</strong>
+            menos código y menos servidores que mantener, a cambio de escribir
+            la lógica en PL/pgSQL, que es más difícil de probar.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Saldo cacheado en el perfil:</strong>
+            leer el saldo es inmediato, pero hay que mantenerlo sincronizado con
+            el ledger; por eso solo lo tocan los triggers.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Borrado en dos pasos:</strong>
+            la base marca y encola, la Edge Function borra el archivo. Es más
+            piezas, pero no deja fotos huérfanas en el Storage.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Límites honestos</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            La regla "no se completa sin foto de antes y después" hoy está en
+            la interfaz, no en la base. El siguiente paso es un
+            <code>CHECK</code> o un trigger que lo exija.
+          </li>
+          <li>No tiene tests automatizados de las políticas RLS.</li>
+          <li>
+            Faltan el canje de recompensas en pantalla, las notificaciones push
+            y generar las tareas recurrentes (el modelo de datos ya está).
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Qué demuestra</h2>
+        <p>
+          Que sé usar Postgres más allá de SELECT: permisos por fila,
+          triggers, tareas programadas y un registro contable de puntos.
+          Es el mismo tipo de cuidado que pide un sistema con dinero real.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

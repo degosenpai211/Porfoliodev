@@ -1,0 +1,96 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+
+const WEEKS = [
+  { semana: "W1", ventas: 40, costos: 28 },
+  { semana: "W2", ventas: 46, costos: 30 },
+  { semana: "W3", ventas: 44, costos: 36 },
+  { semana: "W4", ventas: 58, costos: 34 },
+  { semana: "W5", ventas: 52, costos: 33 },
+  { semana: "W6", ventas: 49, costos: 38 },
+  { semana: "W7", ventas: 63, costos: 37 },
+  { semana: "W8", ventas: 61, costos: 36 },
+]
+const maxVentas = Math.max(...WEEKS.map((week) => week.ventas))
+---
+
+<Layout
+  title="Sample sales reading | Diego Sarmiento"
+  description="Practice data-analyst case with made-up figures: what to look at in a shop's sales and what would change."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Data analyst · practice case"
+        title="What to look at when sales rise and profit does not"
+        summary="Example figures, built to show the method. They are not from a client or a workshop. The question is the usual one: if sales grow, why does profit not follow?"
+      />
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">The problem</h2>
+        <p>
+          A neighborhood store sees the weekly till grow, but at closing there
+          is not more money left. Without separating sales, costs and what has
+          not been collected yet, the owner only sees a total and does not
+          know where to adjust.
+        </p>
+      </section>
+
+      <section class="mt-12">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Sales and costs, in the example</h2>
+        <p class="mt-2 mb-6 text-gray-600 dark:text-gray-400">
+          A 0 to 100 scale, only to compare weeks. The light bar is sales.
+          The dark bar is cost.
+        </p>
+        <div class="space-y-3">
+          {
+            WEEKS.map((week) => (
+              <div>
+                <div class="mb-1 flex justify-between text-xs text-gray-500 dark:text-gray-400">
+                  <span>{week.semana}</span>
+                  <span>{week.ventas} / {week.costos}</span>
+                </div>
+                <div class="flex h-3 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-yellow-500 dark:bg-yellow-300"
+                    style={`width:${Math.round((week.ventas / maxVentas) * 100)}%`}
+                  />
+                </div>
+                <div class="mt-1 flex h-2 overflow-hidden rounded-sm bg-gray-100 dark:bg-gray-800">
+                  <div
+                    class="h-full bg-gray-400 dark:bg-gray-500"
+                    style={`width:${Math.round((week.costos / maxVentas) * 100)}%`}
+                  />
+                </div>
+              </div>
+            ))
+          }
+        </div>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">What shows up</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>Sales rise toward the end, but in W3 and W6 cost gets too close to sales.</li>
+          <li>Those two weeks are where to ask: was too much bought, or was it sold too cheap?</li>
+          <li>The full month hides those two dips. That is why the week matters more than the monthly close.</li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">What would improve</h2>
+        <ol class="list-decimal space-y-3 pl-5">
+          <li>Each week, separate what was sold, what was spent and what has not reached the till yet.</li>
+          <li>Review W3 and W6 purchases before repeating the same “just in case” order.</li>
+          <li>Do not decide the month from one number. The total hides the weak weeks.</li>
+        </ol>
+        <p class="text-sm text-gray-500 dark:text-gray-400">
+          This is an exercise to show how I read a business. On a real job I
+          use the client's numbers in private, and I do not publish them.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>

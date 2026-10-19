@@ -1,6 +1,5 @@
 ---
 import GitHub from "./icons/GitHub.astro"
-import Link from "./icons/Link.astro"
 import LinkButton from "./LinkButton.astro"
 import { getLang, localize } from "@/i18n"
 
@@ -11,26 +10,38 @@ const TAGS = {
   REACT: { name: "React", class: "bg-[#087ea4] text-white" },
   SQL: { name: "SQL", class: "bg-[#1e4a72] text-white" },
   SQLITE: { name: "SQLite", class: "bg-[#0f4c81] text-white" },
+  REACT_NATIVE: { name: "React Native", class: "bg-[#20232a] text-[#61dafb]" },
+  SUPABASE: { name: "Supabase", class: "bg-[#3ecf8e] text-gray-900" },
 }
+
+const CASITA_TAGS = [TAGS.POSTGRES, TAGS.SUPABASE, TAGS.REACT_NATIVE]
 
 const ES = [
   {
-    title: "Vehimac — ERP de taller en producción",
-    role: "Backend",
+    title: "Vehimac — sistema para un taller",
+    role: "Sistema a medida",
     description:
-      "API FastAPI + PostgreSQL para un taller en Bolivia: órdenes, proformas, salarios y estado de resultados. Migraciones SQL, Kanban sin N+1 y docs en /docs. Auth queda para el VPS.",
-    github: "https://github.com/degosenpai211/Vehimac",
-    docs: "https://vehimac-production-9609.up.railway.app/docs",
+      "Uno de dos talleres con los que trabajé. Dejaron Excel y WhatsApp sueltos: ahora siguen cada trabajo, arman la cotización y ven cómo va el mes en un solo lugar.",
     caseStudy: "/proyectos/vehimac",
     tags: [TAGS.FASTAPI, TAGS.POSTGRES, TAGS.PYTHON, TAGS.REACT],
     visual: "kanban",
   },
   {
-    title: "Operación de taller — caso de análisis",
+    title: "Tareas de Casa — reglas en Postgres",
+    role: "App móvil + base de datos",
+    description:
+      "App de tareas del hogar con foto de antes y después, y puntos. Los permisos, los puntos y la limpieza de fotos los aplica Postgres (RLS, triggers y pg_cron), así que nadie hace trampa desde la app.",
+    github: "https://github.com/degosenpai211/casita",
+    caseStudy: "/proyectos/casita",
+    tags: CASITA_TAGS,
+    visual: "tasks",
+  },
+  {
+    title: "Ventas de un negocio — caso de práctica",
     role: "Datos",
     description:
-      "12 semanas de muestra operativa: margen, conversión proforma→OT y piezas sin recoger. SQL, KPIs y 5 recomendaciones de negocio. Datos de práctica, mismo dominio que Vehimac.",
-    caseStudy: "/proyectos/analisis-taller",
+      "Cifras de ejemplo, no de un cliente: si las ventas suben, ¿por qué la ganancia no acompaña? Comparo semanas y digo qué miraría antes de decidir el mes.",
+    caseStudy: "/proyectos/ventas-ejemplo",
     tags: [TAGS.SQL, TAGS.PYTHON],
     visual: "chart",
   },
@@ -48,22 +59,30 @@ const ES = [
 
 const EN = [
   {
-    title: "Vehimac — workshop ERP in production",
-    role: "Backend",
+    title: "Vehimac — a system for a workshop",
+    role: "Custom system",
     description:
-      "FastAPI + PostgreSQL API for a workshop in Bolivia: work orders, quotes, salaries and income statement. SQL migrations, a Kanban without N+1 queries and docs at /docs. Auth is planned for the VPS move.",
-    github: "https://github.com/degosenpai211/Vehimac",
-    docs: "https://vehimac-production-9609.up.railway.app/docs",
+      "One of two workshops I have worked with. They left loose Excel and WhatsApp: they now follow each job, build the quote and see the month in one place.",
     caseStudy: "/proyectos/vehimac",
     tags: [TAGS.FASTAPI, TAGS.POSTGRES, TAGS.PYTHON, TAGS.REACT],
     visual: "kanban",
   },
   {
-    title: "Workshop operations — analysis case",
+    title: "Household Chores — rules in Postgres",
+    role: "Mobile app + database",
+    description:
+      "A household chores app with before and after photos, and points. Postgres enforces the permissions, the points and the photo cleanup (RLS, triggers and pg_cron), so nobody can cheat from the app.",
+    github: "https://github.com/degosenpai211/casita",
+    caseStudy: "/proyectos/casita",
+    tags: CASITA_TAGS,
+    visual: "tasks",
+  },
+  {
+    title: "Shop sales — practice case",
     role: "Data",
     description:
-      "12 weeks of sample operating data: margin, quote→work order conversion and uncollected parts. SQL, KPIs and 5 business recommendations. Practice data, same domain as Vehimac.",
-    caseStudy: "/proyectos/analisis-taller",
+      "Example figures, not a client's: if sales rise, why does profit not follow? I compare weeks and say what I would check before deciding the month.",
+    caseStudy: "/proyectos/ventas-ejemplo",
     tags: [TAGS.SQL, TAGS.PYTHON],
     visual: "chart",
   },
@@ -85,6 +104,43 @@ const PROJECTS = (en ? EN : ES).map((project) => ({
   ...project,
   caseStudy: localize(lang, project.caseStudy),
 }))
+const OTHERS = en
+  ? [
+      {
+        title: "Riel — a non-custodial pasanaku",
+        context: "Hackathon",
+        description:
+          "The Bolivian rotating savings circle as a Solidity contract on Avalanche: members pay in, whoever has the turn claims from the contract, and the money never passes through us. Tested with Hardhat, Next.js frontend.",
+        github: "https://github.com/degosenpai211/Protocol_p",
+        stack: "Solidity · Hardhat · Next.js",
+      },
+      {
+        title: "Pizarra P2P — a whiteboard without a server",
+        context: "Experiment",
+        description:
+          "Infinite collaborative canvas where peers find each other directly (Hyperswarm) and merge their strokes (Autobase). No server stores the board.",
+        github: "https://github.com/degosenpai211/Proyectohack",
+        stack: "Pear · Hyperswarm · Autobase",
+      },
+    ]
+  : [
+      {
+        title: "Riel — pasanaku no custodio",
+        context: "Hackathon",
+        description:
+          "El pasanaku como contrato en Solidity sobre Avalanche: los miembros aportan, quien tiene el turno cobra del contrato y el dinero nunca pasa por nosotros. Con tests en Hardhat y web en Next.js.",
+        github: "https://github.com/degosenpai211/Protocol_p",
+        stack: "Solidity · Hardhat · Next.js",
+      },
+      {
+        title: "Pizarra P2P — sin servidor",
+        context: "Experimento",
+        description:
+          "Pizarra colaborativa infinita donde los participantes se conectan entre sí (Hyperswarm) y combinan sus trazos (Autobase). Ningún servidor guarda la pizarra.",
+        github: "https://github.com/degosenpai211/Proyectohack",
+        stack: "Pear · Hyperswarm · Autobase",
+      },
+    ]
 const KANBAN = en
   ? ["In progress", "Finished", "Delivered"]
   : ["En proceso", "Terminado", "Entregado"]
@@ -92,7 +148,7 @@ const KANBAN = en
 
 <div class="flex flex-col gap-y-16">
   {
-    PROJECTS.map(({ title, description, tags, github, docs, caseStudy, visual, role }) => (
+    PROJECTS.map(({ title, description, tags, github, caseStudy, visual, role }) => (
       <article class="flex flex-col space-y-8 group md:flex-row md:space-x-8 md:space-y-0">
         <div class="w-full md:w-1/2">
           <a href={caseStudy} class="block">
@@ -117,6 +173,20 @@ const KANBAN = en
                     <div class="flex-1 rounded-t-sm bg-yellow-500/80 dark:bg-yellow-300/80" style={`height:${h}%`} />
                   ))}
                 </div>
+              )}
+              {visual === "tasks" && (
+                <ul class="space-y-2">
+                  {(en
+                    ? [["Wash the dishes", "bg-green-500", "+10"], ["Tidy the bedroom", "bg-blue-500", "+15"], ["Take out the trash", "bg-red-500", "+5"]]
+                    : [["Lavar los platos", "bg-green-500", "+10"], ["Ordenar el cuarto", "bg-blue-500", "+15"], ["Sacar la basura", "bg-red-500", "+5"]]
+                  ).map(([task, dot, pts]) => (
+                    <li class="flex items-center gap-2 rounded-lg bg-gray-100 px-3 py-2 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-300">
+                      <span class={`size-2 rounded-full ${dot}`} />
+                      <span class="flex-1">{task}</span>
+                      <span class="font-medium text-yellow-600 dark:text-yellow-200">{pts}</span>
+                    </li>
+                  ))}
+                </ul>
               )}
               {visual === "chat" && (
                 <div class="space-y-2">
@@ -152,15 +222,33 @@ const KANBAN = en
                 {en ? "Code" : "Código"}
               </LinkButton>
             )}
-            {docs && (
-              <LinkButton href={docs}>
-                <Link class="size-4" />
-                API /docs
-              </LinkButton>
-            )}
           </footer>
         </div>
       </article>
     ))
   }
+
+  <section>
+    <h3 class="text-xl font-bold text-gray-800 dark:text-gray-100">
+      {en ? "Other projects" : "Otros proyectos"}
+    </h3>
+    <ul class="mt-6 grid gap-6 md:grid-cols-2">
+      {OTHERS.map(({ title, context, description, github, stack }) => (
+        <li class="flex flex-col rounded-xl border border-gray-200 p-5 dark:border-gray-800">
+          <span class="text-xs font-medium uppercase tracking-wide text-yellow-600 dark:text-yellow-200">
+            {context}
+          </span>
+          <h4 class="mt-2 text-lg font-semibold text-gray-800 dark:text-gray-100">{title}</h4>
+          <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{stack}</p>
+          <p class="mt-3 flex-1 text-sm text-gray-700 dark:text-gray-400">{description}</p>
+          <footer class="mt-4">
+            <LinkButton href={github}>
+              <GitHub class="size-5" />
+              {en ? "Code" : "Código"}
+            </LinkButton>
+          </footer>
+        </li>
+      ))}
+    </ul>
+  </section>
 </div>

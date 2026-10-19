@@ -1,0 +1,193 @@
+---
+import { getLang } from "@/i18n"
+
+const en = getLang(Astro.url) === "en"
+
+const T = en
+  ? {
+      title: "What it looks like",
+      intro:
+        "Sketches of the main screens. They show how it works, not the workshop's real data.",
+      badge: "Sketch",
+      today: {
+        name: "The start of the day",
+        caption: "When the workshop opens, it sees what has to go out today, what is running late and how much has come in this week.",
+        cards: ["Deliver today", "Running late", "Income this week", "Parts not picked up"],
+        list: "To deliver today",
+      },
+      board: {
+        name: "Every job, at a glance",
+        caption: "Each job is a card that moves from column to column. Nobody has to ask whether a part is ready or was already picked up.",
+        cols: ["In progress", "Finished", "Delivered"],
+      },
+      quote: {
+        name: "The quote, in two clicks",
+        caption: "The quote is built from the same job and goes to the customer by WhatsApp. If they accept, it becomes a job without retyping anything.",
+        head: "Quote",
+        total: "Total",
+        send: "Send by WhatsApp",
+      },
+      month: {
+        name: "How the month is going",
+        caption: "Money in, money out and what is left, week by week. The owner no longer rebuilds it in a spreadsheet.",
+        legend: ["Income", "Expenses"],
+        result: "Month result",
+      },
+    }
+  : {
+      title: "Cómo se ve",
+      intro:
+        "Bocetos de las pantallas principales. Muestran cómo funciona, no los datos reales del taller.",
+      badge: "Boceto",
+      today: {
+        name: "El inicio del día",
+        caption: "Al abrir el taller se ve qué hay que entregar hoy, qué está atrasado y cuánto entró en la semana.",
+        cards: ["Entregar hoy", "Atrasados", "Ingresos de la semana", "Piezas sin retirar"],
+        list: "Para entregar hoy",
+      },
+      board: {
+        name: "Cada trabajo, de un vistazo",
+        caption: "Cada trabajo es una tarjeta que pasa de columna en columna. Nadie tiene que preguntar si la pieza está lista o si ya la retiraron.",
+        cols: ["En proceso", "Terminado", "Entregado"],
+      },
+      quote: {
+        name: "La cotización, en dos clics",
+        caption: "La cotización sale del mismo trabajo y le llega al cliente por WhatsApp. Si acepta, se convierte en trabajo sin volver a escribir nada.",
+        head: "Cotización",
+        total: "Total",
+        send: "Enviar por WhatsApp",
+      },
+      month: {
+        name: "Cómo va el mes",
+        caption: "Lo que entra, lo que sale y lo que queda, semana por semana. El dueño ya no lo arma en la planilla.",
+        legend: ["Ingresos", "Egresos"],
+        result: "Resultado del mes",
+      },
+    }
+
+// Alturas de las barras del boceto (ingresos, egresos) por semana.
+const WEEKS = [
+  [70, 45],
+  [55, 50],
+  [85, 52],
+  [78, 40],
+]
+
+const line = "rounded-full bg-gray-200 dark:bg-gray-700"
+---
+
+<section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+  <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">{T.title}</h2>
+  <p>{T.intro}</p>
+
+  <div class="mt-6 grid gap-8 md:grid-cols-2">
+    {
+      [T.today, T.board, T.quote, T.month].map((screen, i) => (
+        <figure>
+          <div class="overflow-hidden rounded-xl border-2 border-dashed border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-900">
+            <div class="flex items-center gap-1.5 border-b-2 border-dashed border-gray-300 px-3 py-2 dark:border-gray-700">
+              <span class="size-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+              <span class="size-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+              <span class="size-2 rounded-full bg-gray-300 dark:bg-gray-600" />
+              <span class="ml-auto text-[10px] font-medium uppercase tracking-wide text-yellow-600 dark:text-yellow-200">
+                {T.badge}
+              </span>
+            </div>
+
+            <div class="flex h-56 flex-col gap-3 p-4 text-[11px] text-gray-500 dark:text-gray-400">
+              {i === 0 && (
+                <Fragment>
+                  <div class="grid grid-cols-2 gap-2">
+                    {T.today.cards.map((card, j) => (
+                      <div class="rounded-lg border border-gray-200 p-2 dark:border-gray-700">
+                        <p>{card}</p>
+                        <div class={`mt-1.5 h-3 ${j === 1 ? "w-6 bg-red-300 dark:bg-red-400/60" : "w-10 bg-gray-300 dark:bg-gray-600"} rounded-full`} />
+                      </div>
+                    ))}
+                  </div>
+                  <p class="mt-1 font-medium text-gray-600 dark:text-gray-300">{T.today.list}</p>
+                  {[0, 1].map(() => (
+                    <div class="flex items-center gap-2">
+                      <span class="size-2 rounded-full bg-yellow-400" />
+                      <div class={`h-2 flex-1 ${line}`} />
+                      <div class={`h-2 w-8 ${line}`} />
+                    </div>
+                  ))}
+                </Fragment>
+              )}
+
+              {i === 1 && (
+                <div class="grid h-full grid-cols-3 gap-2">
+                  {T.board.cols.map((col, j) => (
+                    <div class="flex flex-col gap-2 rounded-lg bg-gray-50 p-2 dark:bg-gray-800/60">
+                      <p class="font-medium">{col}</p>
+                      {Array.from({ length: 3 - j }).map(() => (
+                        <div class="space-y-1.5 rounded-md border border-gray-200 bg-white p-2 dark:border-gray-700 dark:bg-gray-900">
+                          <div class={`h-2 w-4/5 ${line}`} />
+                          <div class={`h-2 w-1/2 ${line}`} />
+                        </div>
+                      ))}
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {i === 2 && (
+                <Fragment>
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium text-gray-600 dark:text-gray-300">{T.quote.head}</p>
+                    <div class={`h-2 w-16 ${line}`} />
+                  </div>
+                  {[0, 1, 2].map(() => (
+                    <div class="flex items-center gap-3 border-b border-dashed border-gray-200 pb-2 dark:border-gray-700">
+                      <div class={`h-2 flex-1 ${line}`} />
+                      <div class={`h-2 w-10 ${line}`} />
+                    </div>
+                  ))}
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium text-gray-600 dark:text-gray-300">{T.quote.total}</p>
+                    <div class="h-3 w-14 rounded-full bg-gray-300 dark:bg-gray-600" />
+                  </div>
+                  <div class="mt-auto self-end rounded-full bg-green-500/90 px-3 py-1.5 text-[11px] font-medium text-white">
+                    {T.quote.send}
+                  </div>
+                </Fragment>
+              )}
+
+              {i === 3 && (
+                <Fragment>
+                  <div class="flex gap-4">
+                    <span class="flex items-center gap-1.5">
+                      <span class="size-2 rounded-sm bg-yellow-400" />
+                      {T.month.legend[0]}
+                    </span>
+                    <span class="flex items-center gap-1.5">
+                      <span class="size-2 rounded-sm bg-gray-300 dark:bg-gray-600" />
+                      {T.month.legend[1]}
+                    </span>
+                  </div>
+                  <div class="flex flex-1 items-end gap-4 border-b border-gray-200 px-2 dark:border-gray-700">
+                    {WEEKS.map(([income, expense]) => (
+                      <div class="flex h-full flex-1 items-end gap-1">
+                        <div class="flex-1 rounded-t-sm bg-yellow-400" style={`height:${income}%`} />
+                        <div class="flex-1 rounded-t-sm bg-gray-300 dark:bg-gray-600" style={`height:${expense}%`} />
+                      </div>
+                    ))}
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <p class="font-medium text-gray-600 dark:text-gray-300">{T.month.result}</p>
+                    <div class="h-3 w-14 rounded-full bg-green-300 dark:bg-green-500/60" />
+                  </div>
+                </Fragment>
+              )}
+            </div>
+          </div>
+          <figcaption class="mt-3">
+            <p class="font-semibold text-gray-800 dark:text-white">{screen.name}</p>
+            <p class="mt-1 text-sm">{screen.caption}</p>
+          </figcaption>
+        </figure>
+      ))
+    }
+  </div>
+</section>

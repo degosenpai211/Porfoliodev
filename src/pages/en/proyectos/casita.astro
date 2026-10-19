@@ -1,0 +1,124 @@
+---
+import Layout from "@/layouts/Layout.astro"
+import SectionContainer from "@/components/SectionContainer.astro"
+import CaseHeader from "@/components/CaseHeader.astro"
+import LinkButton from "@/components/LinkButton.astro"
+import GitHub from "@/components/icons/GitHub.astro"
+---
+
+<Layout
+  title="Household Chores — rules in Postgres | Diego Sarmiento"
+  description="Case study of Household Chores: a React Native and Supabase mobile app where permissions, points and photo cleanup live in Postgres (RLS, triggers and pg_cron)."
+>
+  <main class="px-4 py-24">
+    <SectionContainer>
+      <CaseHeader
+        kicker="Postgres · case study"
+        title="Household Chores — the rules live in the database"
+        summary="A family splits chores, the kids upload a before and an after photo, and they earn points. The interesting part is not the app: a kid cannot cheat even by tampering with the app, because Postgres enforces the rules."
+      />
+
+      <div class="mt-8 flex flex-wrap gap-3">
+        <LinkButton href="https://github.com/degosenpai211/casita">
+          <GitHub class="size-5" />
+          Code
+        </LinkButton>
+      </div>
+
+      <section class="mt-14 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Problem</h2>
+        <p>
+          The app talks straight to Supabase, with no backend of its own in
+          between. Any rule that lives only in the frontend can be skipped by
+          calling the API with the kid's token. If the rules matter (who
+          touches which chore, who earns points), they have to live in the
+          database.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">How it is built</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">8 tables with RLS enabled</strong>
+            and 27 policies (3 of them on the photos): each family only sees its own data, and a kid can
+            only update the chores assigned to them.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">A defense-in-depth trigger:</strong>
+            even when the policy lets an UPDATE through, if a kid changes the
+            assignee, the points or the due date, the database rejects the row.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Points in a ledger:</strong>
+            when a chore is completed, a trigger inserts the entry into
+            <code>points_ledger</code> and updates the balance. The client
+            never writes points.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">pg_cron for what happens on its own:</strong>
+            every 15 minutes it flags overdue chores, and every night it queues
+            photos older than 7 days; an Edge Function deletes them from
+            Storage, which Postgres cannot touch directly.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Offline photos:</strong>
+            with no signal, the photo goes into a local queue and uploads by
+            itself when the network comes back.
+          </li>
+        </ul>
+        <p>
+          The full schema is ~1,000 lines of commented SQL. The app (Expo
+          Router, TypeScript, React Query) has one view for the parent and
+          another for the kids.
+        </p>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Trade-offs</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            <strong class="text-gray-800 dark:text-white">No backend of its own:</strong>
+            less code and fewer servers to run, in exchange for logic written
+            in PL/pgSQL, which is harder to test.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Balance cached on the profile:</strong>
+            reading it is instant, but it has to stay in sync with the ledger;
+            that is why only triggers touch it.
+          </li>
+          <li>
+            <strong class="text-gray-800 dark:text-white">Two-step deletion:</strong>
+            the database flags and queues, the Edge Function deletes the file.
+            More moving parts, but no orphaned photos left in Storage.
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Honest limits</h2>
+        <ul class="list-disc space-y-2 pl-5">
+          <li>
+            The "no completion without a before and an after photo" rule is
+            enforced in the UI today, not in the database. The next step is a
+            <code>CHECK</code> or a trigger that requires it.
+          </li>
+          <li>There are no automated tests for the RLS policies.</li>
+          <li>
+            Reward redemption on screen, push notifications and generating
+            recurring chores are still missing (the data model is ready).
+          </li>
+        </ul>
+      </section>
+
+      <section class="mt-12 space-y-4 text-gray-700 dark:text-gray-300">
+        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">What it shows</h2>
+        <p>
+          That I can use Postgres beyond SELECT: row-level permissions,
+          triggers, scheduled jobs and a points ledger. It is the same kind of
+          care a system that handles real money needs.
+        </p>
+      </section>
+    </SectionContainer>
+  </main>
+</Layout>
